@@ -73,6 +73,7 @@ const resources = {
         you_at: '您在',
         enter: '进入点餐',
         img_alt: '热气腾腾的火锅',
+        recommend_title: '今日推荐',
       },
       menu: {
         hero_badge: '今日好味已备齐',
@@ -315,6 +316,7 @@ const resources = {
         you_at: 'You are at',
         enter: 'Start Ordering',
         img_alt: 'Steaming hotpot',
+        recommend_title: "Today's Specials",
       },
       menu: {
         hero_badge: "Today's best flavors are ready",
