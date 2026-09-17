@@ -39,24 +39,25 @@ test.describe('首页推荐菜品（WelcomeView Recommend Dishes）- E2E 验收�
     }
   })
 
-  test('REQ-002: 切换语言为英文时，推荐区块标题和菜品名称正确显示英文', async ({ page }) => {
-    await goToWelcome(page)
+  test('REQ-002: 英文语言下推荐区块标题和菜品名称正确显示英文', async ({ page }) => {
+    // 设置语言为英文后再进入欢迎页（TopBar 仅在非 welcome 视图渲染，故通过 localStorage 设置语言）
+    await page.goto('/')
+    await page.evaluate(() => localStorage.setItem('i18nextLng', 'en'))
+    // 重新加载以应用语言设置
+    await page.reload()
 
-    // 初始中文：推荐区块标题为「今日推荐」
-    await expect(page.getByText('今日推荐')).toBeVisible()
-    // 菜品名称为中文
-    await expect(page.getByText('鎏金番茄鸳鸯锅')).toBeVisible()
+    // 绑定桌台进入欢迎页
+    await page.getByRole('button', { name: /A08/ }).first().click()
 
-    // 切换语言为英文（按钮文字为 "EN" 表示当前中文，点击后切换英文）
-    await page.getByRole('button', { name: 'EN' }).click()
-
-    // REQ-002.1: 推荐区块标题切换为英文 "Today's Specials"
+    // REQ-002.1: 推荐区块标题为英文 "Today's Specials"
     await expect(page.getByText("Today's Specials")).toBeVisible()
-    // REQ-002.5: 菜品名称切换为英文
+    // REQ-002.5: 菜品名称为英文
     await expect(page.getByText('Golden Tomato Dual-Flavor Pot')).toBeVisible()
-    // badge 标签也切换为英文
+    // badge 标签为英文
     await expect(page.getByText('Top Pick')).toBeVisible()
     await expect(page.getByText('Signature')).toBeVisible()
+    // 价格格式不变
+    await expect(page.getByText('¥68.00')).toBeVisible()
   })
 
   test('REQ-001: 推荐菜品区块不影响进入点餐按钮，点击后正常跳转至菜单页', async ({ page }) => {
