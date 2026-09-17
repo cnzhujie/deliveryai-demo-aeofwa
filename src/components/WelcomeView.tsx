@@ -2,7 +2,8 @@ import { useTranslation } from 'react-i18next'
 import { ArrowRight, MapPin, Sparkles, Store } from 'lucide-react'
 import hotpot from '@/assets/hotpot.jpg'
 import { Button } from '@/components/ui/button'
-import { tableAreas } from '@/data/menu'
+import { products, tableAreas } from '@/data/menu'
+import { money } from '@/lib/utils'
 
 interface WelcomeViewProps {
   table: string
@@ -13,6 +14,7 @@ export function WelcomeView({ table, onEnter }: WelcomeViewProps) {
   const { t } = useTranslation()
   const areaKey = tableAreas[table]
   const tableLabel = areaKey ? `${table} · ${t(areaKey)}` : table
+  const recommended = products.filter((product) => product.badge)
 
   return (
     <main className="relative flex min-h-screen items-center justify-center overflow-hidden bg-rice-100 paper-noise dark:bg-charcoal-900">
@@ -51,8 +53,34 @@ export function WelcomeView({ table, onEnter }: WelcomeViewProps) {
             </p>
           </div>
 
+          {/* 推荐菜品 */}
+          {recommended.length > 0 && (
+            <div className="px-6 pb-2">
+              <h3 className="mb-3 text-sm font-bold text-charcoal-900 dark:text-rice-50">{t('welcome.recommend_title')}</h3>
+              <div className="scrollbar-none -mx-1 flex gap-3 overflow-x-auto px-1 pb-1">
+                {recommended.map((product) => (
+                  <article key={product.id} className="w-40 shrink-0 overflow-hidden rounded-2xl border border-charcoal-900/5 bg-rice-50 shadow-sm dark:border-white/5 dark:bg-charcoal-700/60">
+                    <div className="relative h-24 overflow-hidden">
+                      <img src={product.image} alt={t(product.name)} className="h-full w-full object-cover" />
+                      <div className="absolute inset-0 bg-gradient-to-t from-charcoal-900/40 to-transparent" />
+                      {product.badge && (
+                        <span className="absolute left-2 top-2 rounded-full bg-amber-400 px-2 py-0.5 text-[10px] font-extrabold text-charcoal-900">
+                          {t(product.badge)}
+                        </span>
+                      )}
+                    </div>
+                    <div className="p-2.5">
+                      <h4 className="line-clamp-1 text-xs font-bold text-charcoal-900 dark:text-rice-50">{t(product.name)}</h4>
+                      <p className="mt-1 text-sm font-extrabold text-chili-500">{money(product.price)}</p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          )}
+
           {/* 进入点餐按钮 */}
-          <div className="px-6 pb-7">
+          <div className="px-6 pb-7 pt-4">
             <Button onClick={onEnter} className="w-full">
               {t('welcome.enter')}
               <ArrowRight size={17} />
